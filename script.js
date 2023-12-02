@@ -18,6 +18,8 @@ $(function () {
         </button>
       </div>
     `);
+
+    $('#hourContainer').append(element);
   }
 
 
