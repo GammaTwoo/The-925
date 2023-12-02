@@ -19,6 +19,12 @@ $(function () {
       </div>
     `);
 
+    element.find('.saveBtn').on('click', function () {
+      let text = $(this).siblings('.description').val()
+
+      console.log(`Saving for ${hour} ${meridian}: ${text}`)
+    })
+
     $('#hourContainer').append(element);
   }
 
