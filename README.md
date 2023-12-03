@@ -12,7 +12,10 @@ All thats necessary is to clone the repo. No dependancies
 git clone git@github.com:GammaTwoo/The-925.git
 ```
 
+
 ## Usage
+
+Deployed Site: https://gammatwoo.github.io/The-925/ 
 
 ![image of the website with the displayed date underlined](./assets/images/the-925-1.png)
 
