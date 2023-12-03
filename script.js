@@ -1,13 +1,57 @@
-  // ````// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
-
-
 $(function () {
-  const hours = [9,10,11,12,1,2,3,4,5]
+  const hours = [9, 10, 11, 12, 1, 2, 3, 4, 5]
+  let data
+  
+  try {
+    const storedData = localStorage.getItem('data')
+    data = storedData ? JSON.parse(storedData) : {
+      '9AM': '',
+      '10AM': '',
+      '11AM': '',
+      '12PM': '',
+      '1PM': '',
+      '2PM': '',
+      '3PM': '',
+      '4PM': '',
+      '5PM': ''
+    }
+  } catch (error) {
+    data = {
+      '9AM': '',
+      '10AM': '',
+      '11AM': '',
+      '12PM': '',
+      '1PM': '',
+      '2PM': '',
+      '3PM': '',
+      '4PM': '',
+      '5PM': ''
+    }
+  }
+  
+  function saveToLocalStorage() {
+    try {
+      localStorage.setItem('data', JSON.stringify(data))
+    } catch (error) {
+      console.error('Error saving to local storage:', error)
+    }
+  }
+  
+  function populateTextAreas() {
+    for (const hour of hours) {
+      const meridian = (hour <= 5 || hour === 12) ? 'PM' : 'AM'
+      const key = `${hour}${meridian}`
+  
+      // Retrieve the value from data
+      const value = data[key]
+  
+      // Set the value in the corresponding text area
+      $(`#hour${hour} textarea`).val(value)
+    }
+  }
   
   function createHourElement(hour) {
-    let meridian = (hour <= 5 || hour === 12) ? 'PM' : 'AM';
+    let meridian = (hour <= 5 || hour === 12) ? 'PM' : 'AM'
   
     let element = $(`
       <div class="row time-block" id="hour${hour}">
@@ -17,32 +61,30 @@ $(function () {
           <i class="fas fa-save" aria-hidden="true"></i>
         </button>
       </div>
-    `);
-
+    `)
+  
+    // Attach the event listener
     element.find('.saveBtn').on('click', function () {
       let text = $(this).siblings('.description').val()
-
-      console.log(`Saving for ${hour} ${meridian}: ${text}`)
-    })
-
-    $('#hourContainer').append(element);
-  }
-
-
   
+      // Update the data object with the entered text
+      data[`${hour}${meridian}`] = text
+  
+      // Save the data to local storage
+      saveToLocalStorage()
+    });
+  
+    // Append the element to the container
+    $('#hourContainer').append(element)
+  }
+  
+  // Create the elements for each hour
   for (let i = 0; i < hours.length; i++) {
-    createHourElement(hours[i]);
+    createHourElement(hours[i])
   }
-
-
-
   
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
+  // Populate text areas on page load
+  populateTextAreas()
   
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
