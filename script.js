@@ -85,6 +85,18 @@ $(function () {
   
   // Populate text areas on page load
   populateTextAreas()
+
+  function updateCurrentTime() {
+
+    let currentTime = dayjs().format('h:mm A')
+    let currentDate = dayjs().format('MMMM D, YYYY')
+
+    document.getElementById('currentTime').innerText = `It is currently ${currentTime} on ${currentDate}`
+  }
+
+  updateCurrentTime()
+
+  setInterval(updateCurrentTime, 1000)
   
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
