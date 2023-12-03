@@ -52,16 +52,30 @@ $(function () {
   
   function createHourElement(hour) {
     let meridian = (hour <= 5 || hour === 12) ? 'PM' : 'AM'
-  
+
+
+    let currentHour = dayjs().format('hA')
+    console.log(currentHour)
+
+
+    let timeClass = ''
+    if (currentHour === `${hour}${meridian}`) {
+      timeClass = 'present'
+    } else if (dayjs(`${hour}${meridian}`, 'hA').isBefore(dayjs(currentHour, 'hA'))) {
+      timeClass = 'past'
+    } else {
+      timeClass = 'future'
+    }
+
     let element = $(`
-      <div class="row time-block" id="hour${hour}">
+      <div class="row time-block ${timeClass}" id="hour${hour}">
         <div class="col-2 col-md-1 hour text-center py-3">${hour} ${meridian}</div>
         <textarea class="col-8 col-md-10 description" rows="3"></textarea>
         <button class="btn saveBtn col-2 col-md-1" aria-label="save">
           <i class="fas fa-save" aria-hidden="true"></i>
         </button>
       </div>
-    `)
+    `);
   
     // Attach the event listener
     element.find('.saveBtn').on('click', function () {
@@ -85,20 +99,16 @@ $(function () {
   
   // Populate text areas on page load
   populateTextAreas()
-  
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  
-  
 
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  
+  function updateCurrentTime() {
 
+    let currentTime = dayjs().format('h:mm A')
+    let currentDate = dayjs().format('MMMM D, YYYY')
 
-  // TODO: Add code to display the current date in the header of the page.
+    document.getElementById('currentTime').innerText = `It is currently ${currentTime} on ${currentDate}`
+  }
+
+  updateCurrentTime()
+
+  setInterval(updateCurrentTime, 1000)
 });
