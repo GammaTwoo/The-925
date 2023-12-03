@@ -1,9 +1,12 @@
 $(function () {
+  // Define an array of hours
   const hours = [9, 10, 11, 12, 1, 2, 3, 4, 5]
   let data
   
   try {
+    // Attempt to retrieve data from local storage
     const storedData = localStorage.getItem('data')
+    // Parse the stored data if available, otherwise initialize with default values
     data = storedData ? JSON.parse(storedData) : {
       '9AM': '',
       '10AM': '',
@@ -16,6 +19,7 @@ $(function () {
       '5PM': ''
     }
   } catch (error) {
+    // If there is an error parsing the stored data, initialize with default values
     data = {
       '9AM': '',
       '10AM': '',
@@ -29,6 +33,7 @@ $(function () {
     }
   }
   
+  // Function to save data to local storage
   function saveToLocalStorage() {
     try {
       localStorage.setItem('data', JSON.stringify(data))
@@ -37,6 +42,7 @@ $(function () {
     }
   }
   
+  // Function to populate text areas with data
   function populateTextAreas() {
     for (const hour of hours) {
       const meridian = (hour <= 5 || hour === 12) ? 'PM' : 'AM'
@@ -50,14 +56,12 @@ $(function () {
     }
   }
   
+  // Function to create an HTML element for each hour
   function createHourElement(hour) {
     let meridian = (hour <= 5 || hour === 12) ? 'PM' : 'AM'
 
-
+    // Determine the time class for styling (past, present, future)
     let currentHour = dayjs().format('hA')
-    console.log(currentHour)
-
-
     let timeClass = ''
     if (currentHour === `${hour}${meridian}`) {
       timeClass = 'present'
@@ -67,6 +71,7 @@ $(function () {
       timeClass = 'future'
     }
 
+    // Create the HTML element for the hour
     let element = $(`
       <div class="row time-block ${timeClass}" id="hour${hour}">
         <div class="col-2 col-md-1 hour text-center py-3">${hour} ${meridian}</div>
@@ -77,7 +82,7 @@ $(function () {
       </div>
     `);
   
-    // Attach the event listener
+    // Attach the event listener to the save button
     element.find('.saveBtn').on('click', function () {
       let text = $(this).siblings('.description').val()
   
@@ -100,15 +105,19 @@ $(function () {
   // Populate text areas on page load
   populateTextAreas()
 
+  // Function to update the current time on the page
   function updateCurrentTime() {
 
     let currentTime = dayjs().format('h:mm A')
     let currentDate = dayjs().format('MMMM D, YYYY')
 
+    // Update the current time and date on the page
     document.getElementById('currentTime').innerText = `It is currently ${currentTime} on ${currentDate}`
   }
 
+  // Call the updateCurrentTime function initially
   updateCurrentTime()
 
+  // Set an interval to update the current time every second
   setInterval(updateCurrentTime, 1000)
 });
